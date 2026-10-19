@@ -1,22 +1,87 @@
 <!doctype html>
-<html lang="tr">
+<html lang="tr" class="dark scroll-smooth">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>OYNAGAME - E-pin ve Oyun Parası Pazaryeri</title>
-    <meta name="description" content="OYNAGAME üzerinden oyun parası alım satım taleplerinizi yönetin ve siparişlerinizi takip edin." />
-    <meta property="og:title" content="OYNAGAME - E-pin ve Oyun Parası Pazaryeri" />
-    <meta property="og:description" content="OYNAGAME üzerinden oyun parası alım satım taleplerinizi yönetin ve siparişlerinizi takip edin." />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+    <title>OYNAGAME — Geleceğin Oyun Parası & E-Pin Pazaryeri</title>
+    
+    <!-- SEO & Sosyal Medya Metaları -->
+    <meta name="description" content="OYNAGAME ile 7/24 güvenli oyun parası, E-Pin alım-satımı yapın, siparişlerinizi anlık takip edin." />
+    <meta name="theme-color" content="#0B0E17" />
+    <meta property="og:title" content="OYNAGAME — E-Pin & Oyun Parası Pazaryeri" />
+    <meta property="og:description" content="Anında teslimat, şeffaf komisyon ve canlı destek ile oyun içi ticaretin yeni adresi." />
     <meta property="og:type" content="website" />
     <meta name="twitter:card" content="summary_large_image" />
+
+    <!-- Favicon & Icons -->
     <link rel="icon" type="image/svg+xml" href="/oynagame-og-mark.svg" />
+
+    <!-- Google Fonts (2026 Modern Tipografi: Outfit + Plus Jakarta Sans + JetBrains Mono) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800;900&family=JetBrains+Mono:wght@400;500;600&family=Outfit:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- CSS & JS Assets -->
+    <script type="module" crossorigin src="/assets/index-CINAXKIE.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-Cg0PEQ66.css">
+
+    <!-- 2026 Modern Visual Overrides (Glow, Ambient Light & Glassmorphism) -->
+    <style>
+      :root {
+        --font-sans: 'Outfit', 'Plus Jakarta Sans', system-ui, sans-serif;
+      }
+      body {
+        font-family: var(--font-sans);
+        background-color: #07090e;
+        overflow-x: hidden;
+      }
+      /* Arka plan akıcı ambient neon efektleri */
+      .ambient-glow-1 {
+        position: fixed;
+        top: -10%;
+        left: 15%;
+        width: 500px;
+        height: 500px;
+        background: radial-gradient(circle, rgba(245, 158, 11, 0.12) 0%, rgba(0,0,0,0) 70%);
+        filter: blur(80px);
+        pointer-events: none;
+        z-index: 0;
+      }
+      .ambient-glow-2 {
+        position: fixed;
+        bottom: 10%;
+        right: 10%;
+        width: 600px;
+        height: 600px;
+        background: radial-gradient(circle, rgba(99, 102, 241, 0.08) 0%, rgba(0,0,0,0) 70%);
+        filter: blur(100px);
+        pointer-events: none;
+        z-index: 0;
+      }
+      /* Modern Özelleştirilmiş Scrollbar */
+      ::-webkit-scrollbar {
+        width: 8px;
+      }
+      ::-webkit-scrollbar-track {
+        background: #0B0E14;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #1E2638;
+        border-radius: 4px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #f59e0b;
+      }
+    </style>
   </head>
-  <body class="bg-[#0B0E14] text-slate-100 antialiased selection:bg-amber-500/20 selection:text-amber-300">
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
+  <body class="bg-[#07090e] text-slate-100 antialiased selection:bg-amber-500/30 selection:text-amber-300 relative">
+    
+    <!-- 2026 Ambient Lights (Sayfaya derinlik katan arka plan ışıkları) -->
+    <div class="ambient-glow-1"></div>
+    <div class="ambient-glow-2"></div>
+
+    <!-- React App Root Container -->
+    <div id="root" class="relative z-10"></div>
+
   </body>
 </html>
-
