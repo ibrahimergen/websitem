@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 320" fill="none">
+  <defs>
+    <radialGradient id="gold" cx="0" cy="0" r="1" gradientTransform="matrix(0 205 -205 0 160 70)" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFF0A6"/>
+      <stop offset=".42" stop-color="#DDAE42"/>
+      <stop offset="1" stop-color="#8F5D1C"/>
+    </radialGradient>
+    <linearGradient id="edge" x1="48" y1="48" x2="272" y2="272" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFF1B4"/>
+      <stop offset=".5" stop-color="#A96F23"/>
+      <stop offset="1" stop-color="#F5D879"/>
+    </linearGradient>
+  </defs>
+  <circle cx="160" cy="160" r="151" fill="#211A12"/>
+  <circle cx="160" cy="160" r="139" fill="url(#edge)"/>
+  <circle cx="160" cy="160" r="122" fill="url(#gold)" stroke="#704719" stroke-width="5"/>
+  <circle cx="160" cy="160" r="105" stroke="#F7DE8B" stroke-opacity=".78" stroke-width="3"/>
+  <path d="M105 111c17-18 36-26 56-26 24 0 43 13 55 34-13-5-25-5-36 1-12 7-17 18-17 31v15h-23v-17c0-22 9-39 26-51-20-1-36 7-49 23l-12-10Z" fill="#784B1D" fill-opacity=".82"/>
+  <path d="M119 205h82M130 223h60" stroke="#784B1D" stroke-width="9" stroke-linecap="round"/>
+  <text x="160" y="195" fill="#704719" font-family="Georgia,serif" font-size="54" font-weight="700" text-anchor="middle">W</text>
+  <path d="m78 160 14-8m150 8-14-8M160 78l8 14m-8 150 8-14" stroke="#FFF0A6" stroke-opacity=".8" stroke-width="5" stroke-linecap="round"/>
+</svg>

@@ -1,0 +1,95 @@
+@import "tailwindcss";
+
+@theme {
+  --font-display: 'Cinzel', serif;
+  --font-sans: 'Plus Jakarta Sans', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+
+:root {
+  --page-bg: #f3f6fa;
+  --surface: #ffffff;
+  --surface-muted: #f7f9fc;
+  --ink: #172235;
+  --ink-muted: #506178;
+  --line: #dce4ed;
+}
+
+body {
+  font-family: var(--font-sans);
+  background: linear-gradient(180deg, #f8fafc 0%, var(--page-bg) 100%);
+  color: var(--ink);
+  overflow-x: hidden;
+}
+
+/* Repaint the app's existing dark utility surfaces as a unified light theme. */
+[class*="bg-[#0B0E14]"],
+[class*="bg-[#0E131F]"],
+[class*="bg-[#0e131f]"] {
+  background-color: var(--page-bg) !important;
+}
+
+[class*="bg-[#121622]"],
+[class*="bg-[#121622]/"] {
+  background-color: var(--surface) !important;
+}
+
+[class*="bg-slate-950"],
+[class*="bg-slate-900"] {
+  background-color: var(--surface-muted) !important;
+}
+
+[class*="bg-slate-800"] {
+  background-color: #edf2f7 !important;
+}
+
+[class*="border-slate-800"],
+[class*="border-slate-700"] {
+  border-color: var(--line) !important;
+}
+
+[class*="text-white"],
+[class*="text-slate-100"],
+[class*="text-slate-200"] {
+  color: var(--ink) !important;
+}
+
+[class*="text-slate-300"] {
+  color: #34465e !important;
+}
+
+[class*="text-slate-400"],
+[class*="text-slate-500"] {
+  color: var(--ink-muted) !important;
+}
+
+[class*="text-slate-600"] {
+  color: #738198 !important;
+}
+
+[class*="text-amber-200"],
+[class*="text-amber-300"],
+[class*="text-amber-400"],
+[class*="text-amber-500"] {
+  color: #8a4b08 !important;
+}
+
+[class*="from-amber-950"] {
+  background: linear-gradient(90deg, #fff8e8 0%, #fffdf8 50%, #fff8e8 100%) !important;
+}
+
+/* Custom scrollbar for the light interface */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #e9eef5;
+}
+::-webkit-scrollbar-thumb {
+  background: #c4cfdd;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #9eacbd;
+}

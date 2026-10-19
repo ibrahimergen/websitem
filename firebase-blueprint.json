@@ -1,0 +1,151 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "OYNAGAME kullanıcısının profil ve bakiye bilgileri.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "username": { "type": "string", "maxLength": 50 },
+        "email": { "type": "string", "maxLength": 100 },
+        "role": { "type": "string", "enum": ["user", "admin"] },
+        "balance": { "type": "number" },
+        "phone": { "type": "string", "maxLength": 30 },
+        "discordTag": { "type": "string", "maxLength": 50 },
+        "defaultCharacterName": { "type": "string", "maxLength": 50 },
+        "defaultServer": { "type": "string", "enum": ["europe", "americas", "asia"] },
+        "createdAt": { "type": "string", "maxLength": 50 }
+      },
+      "required": ["id", "username", "email", "role", "balance"]
+    },
+    "Admin": {
+      "title": "Admin",
+      "description": "Yetkili yönetici hesap kimliği.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string", "maxLength": 128 },
+        "email": { "type": "string", "maxLength": 100 },
+        "grantedAt": { "type": "string", "maxLength": 50 }
+      },
+      "required": ["userId", "email"]
+    },
+    "SilverOrder": {
+      "title": "SilverOrder",
+      "description": "Gümüş satın alma siparişi kaydı.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "orderNumber": { "type": "string", "maxLength": 30 },
+        "userId": { "type": "string", "maxLength": 128 },
+        "userEmail": { "type": "string", "maxLength": 100 },
+        "userName": { "type": "string", "maxLength": 50 },
+        "server": { "type": "string", "enum": ["europe", "americas", "asia"] },
+        "characterName": { "type": "string", "maxLength": 50 },
+        "deliveryMethod": { "type": "string", "enum": ["direct_trade", "island_chest", "guild_transfer", "auction_buyout"] },
+        "deliveryLocation": { "type": "string", "maxLength": 100 },
+        "amountM": { "type": "number" },
+        "unitPrice": { "type": "number" },
+        "totalPrice": { "type": "number" },
+        "discountAmount": { "type": "number" },
+        "paymentMethod": { "type": "string", "enum": ["balance", "credit_card_sim", "havale"] },
+        "status": { "type": "string", "enum": ["preparing", "in_delivery", "delivered", "cancelled"] },
+        "secretCode": { "type": "string", "maxLength": 30 },
+        "note": { "type": "string", "maxLength": 500 },
+        "createdAt": { "type": "string", "maxLength": 50 },
+        "updatedAt": { "type": "string", "maxLength": 50 }
+      },
+      "required": ["orderNumber", "userId", "server", "characterName", "amountM", "totalPrice", "status"]
+    },
+    "SilverSaleRequest": {
+      "title": "SilverSaleRequest",
+      "description": "Kullanıcının siteye gümüş satma talebi.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "requestNumber": { "type": "string", "maxLength": 30 },
+        "userId": { "type": "string", "maxLength": 128 },
+        "userEmail": { "type": "string", "maxLength": 100 },
+        "userName": { "type": "string", "maxLength": 50 },
+        "server": { "type": "string", "enum": ["europe", "americas", "asia"] },
+        "characterName": { "type": "string", "maxLength": 50 },
+        "amountM": { "type": "number" },
+        "ratePerM": { "type": "number" },
+        "totalPayout": { "type": "number" },
+        "payoutMethod": { "type": "string", "enum": ["balance", "bank_transfer", "papara"] },
+        "payoutDetails": { "type": "string", "maxLength": 300 },
+        "status": { "type": "string", "enum": ["pending", "reviewing", "trade_ready", "completed", "rejected"] },
+        "tradeMeetPoint": { "type": "string", "maxLength": 200 },
+        "tradeVerificationCode": { "type": "string", "maxLength": 30 },
+        "adminNote": { "type": "string", "maxLength": 500 },
+        "createdAt": { "type": "string", "maxLength": 50 },
+        "updatedAt": { "type": "string", "maxLength": 50 }
+      },
+      "required": ["requestNumber", "userId", "server", "characterName", "amountM", "totalPayout", "status"]
+    },
+    "BalanceTopUpRequest": {
+      "title": "BalanceTopUpRequest",
+      "description": "Kullanıcının bakiye yükleme veya ödeme bildirimi talebi.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "transactionNumber": { "type": "string", "maxLength": 30 },
+        "userId": { "type": "string", "maxLength": 128 },
+        "userEmail": { "type": "string", "maxLength": 100 },
+        "userName": { "type": "string", "maxLength": 50 },
+        "method": { "type": "string", "enum": ["havale", "papara", "credit_card_sim"] },
+        "bankName": { "type": "string", "maxLength": 100 },
+        "senderFullName": { "type": "string", "maxLength": 100 },
+        "amount": { "type": "number" },
+        "referenceCode": { "type": "string", "maxLength": 100 },
+        "note": { "type": "string", "maxLength": 500 },
+        "status": { "type": "string", "enum": ["pending", "approved", "rejected"] },
+        "createdAt": { "type": "string", "maxLength": 50 },
+        "approvedAt": { "type": "string", "maxLength": 50 }
+      },
+      "required": ["transactionNumber", "userId", "amount", "status"]
+    },
+    "ServerMarketRate": {
+      "title": "ServerMarketRate",
+      "description": "Albion sunucusu piyasa kuru ve stok bilgisi.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "enum": ["europe", "americas", "asia"] },
+        "name": { "type": "string", "maxLength": 50 },
+        "location": { "type": "string", "maxLength": 100 },
+        "buyRatePerM": { "type": "number" },
+        "sellRatePerM": { "type": "number" },
+        "stockM": { "type": "number" },
+        "goldRatePer100": { "type": "number" },
+        "isOnline": { "type": "boolean" },
+        "averageDeliveryMinutes": { "type": "number" }
+      },
+      "required": ["id", "name", "buyRatePerM", "sellRatePerM", "stockM"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": { "$ref": "#/entities/User" },
+      "description": "Oyuncu kullanıcı profilleri ve bakiyeleri"
+    },
+    "/admins/{adminId}": {
+      "schema": { "$ref": "#/entities/Admin" },
+      "description": "Yetkilendirilmiş platform yöneticileri"
+    },
+    "/orders/{orderId}": {
+      "schema": { "$ref": "#/entities/SilverOrder" },
+      "description": "Gümüş satın alma siparişleri"
+    },
+    "/sales/{saleId}": {
+      "schema": { "$ref": "#/entities/SilverSaleRequest" },
+      "description": "Oyuncu gümüş satış talepleri"
+    },
+    "/topups/{topupId}": {
+      "schema": { "$ref": "#/entities/BalanceTopUpRequest" },
+      "description": "Bakiye yükleme ve ödeme bildirimleri"
+    },
+    "/servers/{serverId}": {
+      "schema": { "$ref": "#/entities/ServerMarketRate" },
+      "description": "Sunucu kurları ve mevcut stok miktarları"
+    }
+  }
+}

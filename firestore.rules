@@ -1,0 +1,164 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Default deny all unknown paths
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Helper functions
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    // Bootstrap superadmin email from environment / setup and dynamic admins collection
+    function isSuperAdmin() {
+      return isSignedIn() && (request.auth.token.email == 't0xiboergen@gmail.com' || request.auth.token.email == 'admin@albiontr.com');
+    }
+
+    function isAdmin() {
+      return isSuperAdmin() || (isSignedIn() && exists(/databases/$(database)/documents/admins/$(request.auth.uid)));
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    // Entity validation blueprints
+    function isValidUser(data) {
+      return data.keys().hasAll(['id', 'username', 'email', 'role', 'balance']) &&
+        data.id is string && data.id.size() <= 128 &&
+        data.username is string && data.username.size() <= 50 &&
+        data.email is string && data.email.size() <= 100 &&
+        data.role in ['user', 'admin'] &&
+        data.balance is number && data.balance >= 0;
+    }
+
+    function isValidOrder(data) {
+      return data.keys().hasAll(['orderNumber', 'userId', 'server', 'characterName', 'amountM', 'totalPrice', 'status']) &&
+        data.orderNumber is string && data.orderNumber.size() <= 30 &&
+        data.userId is string && data.userId.size() <= 128 &&
+        data.server is string && data.server.size() <= 128 &&
+        data.characterName is string && data.characterName.size() <= 50 &&
+        data.amountM is number && data.amountM > 0 &&
+        data.totalPrice is number && data.totalPrice >= 0 &&
+        data.status in ['preparing', 'in_delivery', 'delivered', 'cancelled'];
+    }
+
+    function isValidSale(data) {
+      return data.keys().hasAll(['requestNumber', 'userId', 'server', 'characterName', 'amountM', 'totalPayout', 'status']) &&
+        data.requestNumber is string && data.requestNumber.size() <= 30 &&
+        data.userId is string && data.userId.size() <= 128 &&
+        data.server is string && data.server.size() <= 128 &&
+        data.characterName is string && data.characterName.size() <= 50 &&
+        data.amountM is number && data.amountM >= 10 &&
+        data.totalPayout is number && data.totalPayout >= 0 &&
+        data.status in ['pending', 'reviewing', 'trade_ready', 'completed', 'rejected'];
+    }
+
+    function isValidTopUp(data) {
+      return data.keys().hasAll(['transactionNumber', 'userId', 'amount', 'status']) &&
+        data.transactionNumber is string && data.transactionNumber.size() <= 30 &&
+        data.userId is string && data.userId.size() <= 128 &&
+        data.amount is number && data.amount > 0 &&
+        data.status in ['pending', 'approved', 'rejected'];
+    }
+
+    // Users Collection
+    match /users/{userId} {
+      allow get: if isOwner(userId) || isAdmin();
+      allow list: if isAdmin();
+      allow create: if isOwner(userId) && isValidUser(incoming()) && (isSuperAdmin() || (incoming().role == 'user' && incoming().balance == 0.0));
+      allow update: if (isOwner(userId) && isValidUser(incoming()) && incoming().role == existing().role && incoming().balance == existing().balance && incoming().diff(existing()).affectedKeys().hasOnly(['defaultCharacterName', 'defaultServer', 'phone', 'discordTag', 'username'])) ||
+        (isOwner(userId) && isValidUser(incoming()) && incoming().role == existing().role && incoming().balance < existing().balance && incoming().diff(existing()).affectedKeys().hasOnly(['balance'])) ||
+        isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    // Admins Collection
+    match /admins/{adminId} {
+      allow read: if isAdmin();
+      allow write: if isSuperAdmin();
+    }
+
+    // Orders Collection
+    match /orders/{orderId} {
+      allow get: if isOwner(resource.data.userId) || isAdmin();
+      allow list: if (isSignedIn() && resource.data.userId == request.auth.uid) || isAdmin();
+      allow create: if isSignedIn() && incoming().userId == request.auth.uid && isValidOrder(incoming()) && incoming().status == 'preparing';
+      allow update: if (isOwner(existing().userId) && existing().status == 'preparing' && incoming().status == 'cancelled' && incoming().diff(existing()).affectedKeys().hasOnly(['status', 'updatedAt', 'note'])) || isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    // Sales Collection
+    match /sales/{saleId} {
+      allow get: if isOwner(resource.data.userId) || isAdmin();
+      allow list: if (isSignedIn() && resource.data.userId == request.auth.uid) || isAdmin();
+      allow create: if isSignedIn() && incoming().userId == request.auth.uid && isValidSale(incoming()) && incoming().status == 'pending';
+      allow update: if isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    // Balance Top-Ups Collection
+    match /topups/{topupId} {
+      allow get: if isOwner(resource.data.userId) || isAdmin();
+      allow list: if (isSignedIn() && resource.data.userId == request.auth.uid) || isAdmin();
+      allow create: if isSignedIn() && incoming().userId == request.auth.uid && isValidTopUp(incoming()) && incoming().status == 'pending';
+      allow update: if isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    // Balance withdrawals
+    match /withdrawals/{withdrawalId} {
+      allow get: if isOwner(resource.data.userId) || isAdmin();
+      allow list: if (isSignedIn() && resource.data.userId == request.auth.uid) || isAdmin();
+      allow create: if isSignedIn() && incoming().userId == request.auth.uid &&
+        incoming().id == withdrawalId &&
+        incoming().keys().hasAll(['id', 'requestNumber', 'userId', 'userEmail', 'userName', 'amount', 'method', 'recipientName', 'accountDetails', 'status', 'createdAt']) &&
+        incoming().amount is number && incoming().amount > 0 &&
+        incoming().method in ['bank_transfer', 'papara'] &&
+        incoming().status == 'pending' &&
+        incoming().requestNumber is string && incoming().requestNumber.size() <= 30 &&
+        incoming().recipientName is string && incoming().recipientName.size() > 0 && incoming().recipientName.size() <= 100 &&
+        incoming().accountDetails is string && incoming().accountDetails.size() > 0 && incoming().accountDetails.size() <= 200 &&
+        getAfter(/databases/$(database)/documents/users/$(request.auth.uid)).data.balance ==
+          get(/databases/$(database)/documents/users/$(request.auth.uid)).data.balance - incoming().amount;
+      allow update: if isAdmin() && existing().status == 'pending' &&
+        incoming().status in ['paid', 'rejected'] &&
+        incoming().diff(existing()).affectedKeys().hasOnly(['status', 'processedAt']);
+      allow delete: if isAdmin();
+    }
+
+    // Live support conversations
+    match /supportMessages/{messageId} {
+      allow get, list: if isAdmin() || (isSignedIn() && resource.data.userId == request.auth.uid);
+      allow create: if incoming().keys().hasAll(['id', 'userId', 'sender', 'senderName', 'text', 'timestamp']) &&
+        incoming().id == messageId &&
+        incoming().userId is string &&
+        incoming().senderName is string && incoming().senderName.size() <= 100 &&
+        incoming().text is string && incoming().text.size() > 0 && incoming().text.size() <= 4000 &&
+        ((isOwner(incoming().userId) && incoming().sender == 'user') ||
+          (isAdmin() && incoming().sender == 'support'));
+      allow update, delete: if isAdmin();
+    }
+
+    // Server Market Rates & Stocks Collection
+    match /servers/{serverId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+  }
+}
